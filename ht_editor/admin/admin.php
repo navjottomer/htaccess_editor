@@ -1,18 +1,26 @@
-<?php
-  $htaccessfile = osc_base_path() . '.htaccess' ;
-  $htaccess = file_get_contents($htaccessfile);
-?>
 <h2 class="render-title"><?php _e('Htaccess Editor', 'ht_editor'); ?></h2>
-<p>This plugin is created by <a href="http://tuffclassified.com">Navjot Tomer</a> for OSclass community.</p>             
+<p>This plugin is created by <a href="http://tuffclassified.com">Navjot Tomer</a> for OSclass community.</p>
+<?php
+    $htaccessfile = osc_base_path() . '.htaccess';
+    if(file_exists(osc_base_path() . '.htaccess')) {
+        $htaccess = file_get_contents($htaccessfile);
+?>
 
-<form action="<?php echo osc_admin_render_plugin_url('oc-content/plugins/ht_editor/admin.php'); ?>" method="post">
+<form action="<?php echo osc_admin_base_url(true); ?>" method="post">
+    <input type="hidden" name="page" value="plugins" />
+    <input type="hidden" name="action" value="renderplugin" />
+    <?php if(osc_version()<320) { ?>
+        <input type="hidden" name="file" value="ht_editor/admin.php" />
+    <?php } else { ?>
+        <input type="hidden" name="route" value="hteditor" />
+    <?php }; ?>
     <input type="hidden" name="action_specific" value="ht_editor" />
     <fieldset>
         <div class="form-horizontal">
  			<div class="form-row input-description-wide">
                 <div class="form-label"><?php _e('Htaccess Editor', 'ht_editor'); ?></div>
                 <div class="form-controls"  ><textarea name="edit_htaccess" rows="10"><?php echo $htaccess; ?></textarea></div>
-                <div class="help-box" style="color:red;"><?php _e('Make a backup before making any changes to your htaccess file', 'tuffclassified'); ?></div>
+                <div class="help-box" style="color:red;"><?php _e('Make a backup before making any changes to your htaccess file', 'ht_editor'); ?></div>
             </div>
                  
             
@@ -154,3 +162,15 @@
 <span style="color: #00007f;">RewriteRule</span> ^<span style="color: #339933;">&#40;</span>.*<span style="color: #339933;">&#41;</span>$ <span style="color: #008000;">-</span> <span style="color: #339933;">&#91;</span>S=<span style="color: #ff0000;">1</span><span style="color: #339933;">&#93;</span><br />
 <span style="color: #00007f;">RewriteRule</span> . <?php echo REL_WEB_URL ; ?>index.php <span style="color: #339933;">&#91;</span>L<span style="color: #339933;">&#93;</span><br />
 <span style="color: #adadad; font-style: italic;">####Custom Rewrite Rules End####</span></div>
+
+<?php } else { ?>
+        <form action="#" method="post">
+            <fieldset>
+                <div class="form-horizontal">
+                    <div class="form-row input-description-wide">
+                        <div class="help-box" style="color:red;"><?php _e('.htaccess file does not exist or is not readable. Please enable Permalinks', 'ht_editor'); ?></div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+<?php }; ?>
